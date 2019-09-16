@@ -123,7 +123,7 @@ namespace iCuboid.HRMS.DataConnector
                         }
                     }
 
-                    if (ProcessingDayCheckIn >= ShiftOneStartdate && ProcessingDayCheckOut >= ShiftOneEnddate )
+                    if (ProcessingDayCheckIn <= ShiftOneStartdate && ProcessingDayCheckOut <= ShiftOneEnddate )
                     {
                         Log.Info($"Employee {empid} is found in shift1 so processing attendance");
                         //if checkout is before HalfDayThreshold
@@ -166,7 +166,7 @@ namespace iCuboid.HRMS.DataConnector
                         }
 
                     }
-                    else if (ProcessingDayCheckIn >= ShiftTwoStartdate && ProcessingDayCheckOut >= ShiftTwoEnddate)
+                    else if (ProcessingDayCheckIn <= ShiftTwoStartdate && ProcessingDayCheckOut <= ShiftTwoEnddate)
                     {
                         Log.Info($"Employee {empid} is found in shift2 so processing attendance");
                         //this shift is ending in next day so feteching chekouttime again
@@ -214,7 +214,7 @@ namespace iCuboid.HRMS.DataConnector
                         }
 
                     }
-                    else if (ProcessingDayCheckIn >= ShiftThreeStartdate && ProcessingDayCheckOut >= ShiftThreeEnddate)
+                    else if (ProcessingDayCheckIn <= ShiftThreeStartdate && ProcessingDayCheckOut <= ShiftThreeEnddate)
                     {
                         Log.Info($"Employee {empid} is found in shift3 so processing attendance");
                         //if checkout is before HalfDayThreshold
