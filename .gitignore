@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.dll
+/iCuboid.HRMS.SchedulerService/packages/Newtonsoft.Json.12.0.2/lib
+/iCuboid.HRMS.SchedulerService/packages/RestSharp.105.2.3/lib
+/iCuboid.HRMS.SchedulerService/packages
+/iCuboid.HRMS.SchedulerService/obj
+/iCuboid.HRMS.SchedulerService/bin/Debug
+/iCuboid.HRMS.DataConnector/bin/Debug
+/iCuboid.HRMS.DataConnector/obj/Debug
+/.vs
+/iCuboid.HRMS.SchedulerService/.vs/iCuboid.HRMS.SchedulerService/v16
