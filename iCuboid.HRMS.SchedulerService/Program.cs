@@ -15,14 +15,14 @@ namespace iCuboid.HRMS.SchedulerService
         /// </summary>
         static void Main()
         {
-            //ServiceBase[] ServicesToRun;
-            //ServicesToRun = new ServiceBase[]
-            //{
-            //    new HrmsSchedulerService()
-            //};
-            //ServiceBase.Run(ServicesToRun);
+            ServiceBase[] ServicesToRun;
+            ServicesToRun = new ServiceBase[]
+            {
+                new HrmsSchedulerService()
+            };
+            ServiceBase.Run(ServicesToRun);
 
-            AMSConnector.Connect().GetAwaiter().GetResult();
+            //AMSConnector.Connect().GetAwaiter().GetResult();
         }
     }
 }

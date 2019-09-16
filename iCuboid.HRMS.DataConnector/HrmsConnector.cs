@@ -64,13 +64,17 @@ namespace iCuboid.HRMS.DataConnector
                     int ShiftThreeHalfDayThresholdHour = 0;
                     float workinghours = 0;
                     float othours = 0;
+                    float otThreshold = 0;
+                    float BufferHour = 0;
                     ERPAttendance attendance = new ERPAttendance();
                     List<TimeSheetLog> TimeSheetLogs = new List<TimeSheetLog>();
                     TimeSheetLog timeSheetLog = new TimeSheetLog();
+
                     ShiftOneHalfDayThresholdHour = Convert.ToInt32(ConfigurationManager.AppSettings["ShiftOneHalfDayThresholdHour"]);
                     ShiftTwoHalfDayThresholdHour = Convert.ToInt32(ConfigurationManager.AppSettings["ShiftTwoHalfDayThresholdHour"]);
                     ShiftThreeHalfDayThresholdHour = Convert.ToInt32(ConfigurationManager.AppSettings["ShiftThreeHalfDayThresholdHour"]);
-
+                    otThreshold = Convert.ToInt32(ConfigurationManager.AppSettings["OtHoursThreshold"]);
+                    BufferHour = Convert.ToInt32(ConfigurationManager.AppSettings["BufferHours"]);
                     //fetching shift timings from webconfig
                     IList<string> ShiftOneStartList = ConfigurationManager.AppSettings["ShiftOneStartTime"].Split(':');
                     TimeSpan ShiftOneStartTs = new TimeSpan(Convert.ToInt32(ShiftOneStartList[0]), Convert.ToInt32(ShiftOneStartList[1]), 0);
@@ -98,7 +102,7 @@ namespace iCuboid.HRMS.DataConnector
 
                     
                     //If there is no checkin records in AMS for the day
-                    if (ProcessingDayCheckIn == DateTime.MinValue)
+                    if (ProcessingDayCheckIn == DateTime.MinValue|| ProcessingDayCheckOut == DateTime.MinValue)
                     {
                         //Check the employee is on leave or not
                         Log.Info($"Checking employee {empid} is leave or not");
@@ -123,7 +127,7 @@ namespace iCuboid.HRMS.DataConnector
                         }
                     }
 
-                    if (ProcessingDayCheckIn <= ShiftOneStartdate && ProcessingDayCheckOut <= ShiftOneEnddate )
+                    if (ProcessingDayCheckIn >= ShiftOneStartdate.AddHours(BufferHour) && ProcessingDayCheckOut >= ShiftOneEnddate.AddHours(BufferHour) || ProcessingDayCheckIn >= ShiftOneStartdate.AddHours(-BufferHour) && ProcessingDayCheckOut >= ShiftOneEnddate.AddHours(-BufferHour))
                     {
                         Log.Info($"Employee {empid} is found in shift1 so processing attendance");
                         //if checkout is before HalfDayThreshold
@@ -152,10 +156,10 @@ namespace iCuboid.HRMS.DataConnector
                             workinghours = (float)(h + m / 60);
                             timeSheetLog.from_time = ProcessingDayCheckIn.ToString("yyyy-MM-dd");
                             timeSheetLog.to_time = ProcessingDayCheckOut.ToString("yyyy-MM-dd");
-                            if (workinghours > 8.35)
+                            if (workinghours > otThreshold && ProcessingDayCheckIn <= ShiftOneStartdate.AddHours(BufferHour))
                             {
 
-                                othours = workinghours - (float)8.35;
+                                othours = workinghours - (float)otThreshold;
                                 timeSheetLog.hours = (float)Math.Round(othours);
                                 timeSheetLog.activity_type = "Execution";
                                 TimeSheetLogs.Add(timeSheetLog);
@@ -166,7 +170,7 @@ namespace iCuboid.HRMS.DataConnector
                         }
 
                     }
-                    else if (ProcessingDayCheckIn <= ShiftTwoStartdate && ProcessingDayCheckOut <= ShiftTwoEnddate)
+                    else if (ProcessingDayCheckIn >= ShiftTwoStartdate.AddHours(BufferHour) && ProcessingDayCheckOut >= ShiftTwoEnddate.AddHours(BufferHour) || ProcessingDayCheckIn >= ShiftTwoStartdate.AddHours(-BufferHour) && ProcessingDayCheckOut >= ShiftTwoEnddate.AddHours(-BufferHour))
                     {
                         Log.Info($"Employee {empid} is found in shift2 so processing attendance");
                         //this shift is ending in next day so feteching chekouttime again
@@ -200,10 +204,10 @@ namespace iCuboid.HRMS.DataConnector
                             workinghours = (float)(h + m / 60);
                             timeSheetLog.from_time = ProcessingDayCheckIn.ToString("yyyy-MM-dd");
                             timeSheetLog.to_time = ProcessingDayCheckOut.ToString("yyyy-MM-dd");
-                            if (workinghours > 8.35)
+                            if (workinghours > otThreshold && ProcessingDayCheckIn <= ShiftTwoStartdate.AddHours(BufferHour))
                             {
 
-                                othours = workinghours - (float)8.35;
+                                othours = workinghours - (float)otThreshold;
                                 timeSheetLog.hours = (float)Math.Round(othours);
                                 timeSheetLog.activity_type = "Execution";
                                 TimeSheetLogs.Add(timeSheetLog);
@@ -214,7 +218,7 @@ namespace iCuboid.HRMS.DataConnector
                         }
 
                     }
-                    else if (ProcessingDayCheckIn <= ShiftThreeStartdate && ProcessingDayCheckOut <= ShiftThreeEnddate)
+                    else if (ProcessingDayCheckIn >= ShiftThreeStartdate.AddHours(BufferHour) && ProcessingDayCheckOut >= ShiftThreeEnddate.AddHours(BufferHour) || ProcessingDayCheckIn >= ShiftThreeStartdate.AddHours(-BufferHour) && ProcessingDayCheckOut >= ShiftThreeEnddate.AddHours(-BufferHour))
                     {
                         Log.Info($"Employee {empid} is found in shift3 so processing attendance");
                         //if checkout is before HalfDayThreshold
@@ -243,10 +247,10 @@ namespace iCuboid.HRMS.DataConnector
                             workinghours = (float)(h + m / 60);
                             timeSheetLog.from_time = ProcessingDayCheckIn.ToString("yyyy-MM-dd");
                             timeSheetLog.to_time = ProcessingDayCheckOut.ToString("yyyy-MM-dd");
-                            if (workinghours > 8.35)
+                            if (workinghours > otThreshold && ProcessingDayCheckIn <= ShiftTwoStartdate.AddHours(BufferHour))
                             {
 
-                                othours = workinghours - (float)8.35;
+                                othours = workinghours - (float)otThreshold;
                                 timeSheetLog.hours = (float)Math.Round(othours);
                                 timeSheetLog.activity_type = "Execution";
                                 TimeSheetLogs.Add(timeSheetLog);
@@ -256,6 +260,34 @@ namespace iCuboid.HRMS.DataConnector
                             Log.Info($"Employee {empid} checkout {ProcessingDayCheckOut} properly and marking attendance status {attendance.status} and workinghours {timeSheetLog.hours}");
                         }
 
+                    }
+                    //if employee is not there in any shift
+                    else
+                    {
+                        var Datediff = (ProcessingDayCheckOut - ProcessingDayCheckIn);
+                        var Diffh = Math.Floor(Datediff.TotalHours);
+                        var Diffm = (Datediff.TotalHours - Diffh) * 60;
+                        var Totalworkinghours = (float)(Diffh + Diffm / 60);
+                        if (Totalworkinghours <= 4) {
+                            attendance.status = AttendanceStatusEnum.Absent;
+                            attendance.attendance_date = ProcessingDayCheckOut.ToString("yyyy-MM-dd");
+                            Log.Info($"Employee {empid} is not there in any shift and his checkout {ProcessingDayCheckOut} and checkin {ProcessingDayCheckIn} the total working hours {Totalworkinghours} so marking attendance status {attendance.status} and workinghours {timeSheetLog.hours}");
+
+                        }
+                        else if(Totalworkinghours <= 8)
+                        {
+                            attendance.status = AttendanceStatusEnum.HalfDay;
+                            attendance.attendance_date = ProcessingDayCheckOut.ToString("yyyy-MM-dd");
+                            Log.Info($"Employee {empid} checkout {ProcessingDayCheckOut} properly and marking attendance status {attendance.status} and workinghours {timeSheetLog.hours}");
+
+                        }
+                        else
+                        {
+                            attendance.status = AttendanceStatusEnum.Present;
+                            attendance.attendance_date = ProcessingDayCheckOut.ToString("yyyy-MM-dd");
+                            Log.Info($"Employee {empid} checkout {ProcessingDayCheckOut} properly and marking attendance status {attendance.status} and workinghours {timeSheetLog.hours}");
+
+                        }
                     }
 
 
