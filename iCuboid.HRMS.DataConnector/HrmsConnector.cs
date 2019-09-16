@@ -74,27 +74,27 @@ namespace iCuboid.HRMS.DataConnector
                     //fetching shift timings from webconfig
                     IList<string> ShiftOneStartList = ConfigurationManager.AppSettings["ShiftOneStartTime"].Split(':');
                     TimeSpan ShiftOneStartTs = new TimeSpan(Convert.ToInt32(ShiftOneStartList[0]), Convert.ToInt32(ShiftOneStartList[1]), 0);
-                    var ShiftOneStartdate = DateTime.Now.Date.Add(ShiftOneStartTs).AddDays(-1);
+                    var ShiftOneStartdate = ProcessingDate.Date.Add(ShiftOneStartTs);
 
                     IList<string> ShiftOneEndList = ConfigurationManager.AppSettings["ShiftOneEndTime"].Split(':');
                     TimeSpan ShiftOneEndTs = new TimeSpan(Convert.ToInt32(ShiftOneEndList[0]), Convert.ToInt32(ShiftOneEndList[1]), 0);
-                    var ShiftOneEnddate = DateTime.Now.Date.Add(ShiftOneEndTs).AddDays(-1);
+                    var ShiftOneEnddate = ProcessingDate.Date.Add(ShiftOneEndTs);
 
                     IList<string> ShiftTwoStartList = ConfigurationManager.AppSettings["ShiftTwoStartTime"].Split(':');
                     TimeSpan ShiftTwoStartTs = new TimeSpan(Convert.ToInt32(ShiftTwoStartList[0]), Convert.ToInt32(ShiftTwoStartList[1]), 0);
-                    var ShiftTwoStartdate = DateTime.Now.Date.Add(ShiftTwoStartTs).AddDays(-1);
+                    var ShiftTwoStartdate = ProcessingDate.Date.Add(ShiftTwoStartTs);
 
                     IList<string> ShiftTwoEndList = ConfigurationManager.AppSettings["ShiftTwoEndTime"].Split(':');
                     TimeSpan ShiftTwoEndTs = new TimeSpan(Convert.ToInt32(ShiftTwoEndList[0]), Convert.ToInt32(ShiftTwoEndList[1]), 0);
-                    var ShiftTwoEnddate = DateTime.Now.Date.Add(ShiftTwoEndTs);
+                    var ShiftTwoEnddate = ProcessingDate.Date.Add(ShiftTwoEndTs).AddDays(1);
 
                     IList<string> ShiftThreeStartList = ConfigurationManager.AppSettings["ShiftThreeStartTime"].Split(':');
                     TimeSpan ShiftThreeStartTs = new TimeSpan(Convert.ToInt32(ShiftThreeStartList[0]), Convert.ToInt32(ShiftThreeStartList[1]), 0);
-                    var ShiftThreeStartdate = DateTime.Now.Date.Add(ShiftThreeStartTs).AddDays(-1);
+                    var ShiftThreeStartdate = ProcessingDate.Date.Add(ShiftThreeStartTs);
 
                     IList<string> ShiftThreeEndList = ConfigurationManager.AppSettings["ShiftThreeEndTime"].Split(':');
                     TimeSpan ShiftThreeEndTs = new TimeSpan(Convert.ToInt32(ShiftThreeEndList[0]), Convert.ToInt32(ShiftThreeEndList[1]), 0);
-                    var ShiftThreeEnddate = DateTime.Now.Date.Add(ShiftThreeEndTs).AddDays(-1);
+                    var ShiftThreeEnddate = ProcessingDate.Date.Add(ShiftThreeEndTs);
 
                     
                     //If there is no checkin records in AMS for the day
